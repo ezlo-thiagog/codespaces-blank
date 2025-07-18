@@ -59,7 +59,7 @@ app.post("/", (req, res) => {
     console.log(`Generated URL for serial ${serial}: ${metabaseUrl}`);
 
     return res.json({
-      response_type: "in_channel",
+      response_type: "ephemeral",
       text: `🔗 <${metabaseUrl}|View dashboard for ${serial}>`,
     });
   } catch (error) {
