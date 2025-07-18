@@ -33,7 +33,7 @@ app.post("/", (req, res) => {
     }
 
     const serial = text.trim();
-    const metabaseUrl = `https://metabase.mios.com/public/question/your-question-id?serial_number=${encodeURIComponent(serial)}`;
+    const metabaseUrl = `https://metabase.mios.com/public/question/a3c3b26f-1c43-48d4-9061-39dd872d1014?serial_number=${encodeURIComponent(serial)}`;
 
     console.log(`Generated URL for serial ${serial}: ${metabaseUrl}`);
 
