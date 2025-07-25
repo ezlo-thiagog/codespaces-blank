@@ -56,7 +56,7 @@ app.get("/", (req, res) => {
 app.post("/snapshot", async (req, res) => {
   try {
     console.log("Received snapshot request:", req.body);
-    const { channel_id, text } = req.body;
+    const { channel_id, text, thread_ts } = req.body;
     
     // Validate channel access
     const channelValidation = ValidationService.validateChannelAccess(channel_id, CONFIG.ALLOWED_CHANNELS);
@@ -77,22 +77,46 @@ app.post("/snapshot", async (req, res) => {
         text: result.error,
       });
     }
-    //Construct message with WebRTC status if response contains success
-    //response structure is { success: true, serial: string, uuid: string, message: string, webrtcV2: string }
-    //Text should be "Controller with serial {serial} "
+
+    // Construct message with WebRTC status if response contains success
+    // response structure is { success: true, serial: string, uuid: string, message: string, webrtcV2: string }
+    // Text should be "Controller with serial {serial} "
     const message = deviceService.getControllerStatusMessage(result, text);
     console.log("Snapshot request processed successfully:", message);
     result.message = message; // Update result with the constructed message
-    return res.json({
-      response_type: "ephemeral",
-      text: result.message,
-    });
+
+    // Check if this is from a thread
+    if (thread_ts) {
+      console.log(`Responding to thread with timestamp: ${thread_ts}`);
+      return res.json({
+        response_type: "in_channel", // or "ephemeral" if you want it private
+        text: result.message,
+        thread_ts: thread_ts // This will make the response appear in the thread
+      });
+    } else {
+      // Regular response (not in a thread)
+      console.log("Responding to channel (not in thread)");
+      return res.json({
+        response_type: "ephemeral",
+        text: result.message,
+      });
+    }
+
   } catch (error) {
     console.error("Error processing snapshot request:", error);
-    return res.status(500).json({
+    
+    // Handle error response - also check for thread context
+    const errorResponse = {
       response_type: "ephemeral",
       text: "❌ An error occurred while processing your snapshot request.",
-    });
+    };
+    
+    // If we have thread_ts, include it in error response too
+    if (req.body.thread_ts) {
+      errorResponse.thread_ts = req.body.thread_ts;
+    }
+    
+    return res.status(500).json(errorResponse);
   }
 });
 
