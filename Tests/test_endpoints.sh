@@ -24,3 +24,18 @@ echo -e "\n🚫 Testing POST / (unauthorized channel)"
 curl -s -X POST "$BASE_URL" \
   -H "Content-Type: application/json" \
   -d '{"channel_id":"C0000000000", "text":"92000000"}' && echo -e "\n"
+
+echo -e "\n📦 Testing POST for snapshot/ (valid serial)"
+curl -s -X POST "$BASE_URL/snapshot" \
+  -H "Content-Type: application/json" \
+  -d '{"channel_id":"C04SM9CP4F2", "text":"92000043"}' && echo -e "\n"
+
+  echo -e "\n📦 Testing POST for snapshot/ (invalid serial)"
+curl -s -X POST "$BASE_URL/snapshot" \
+  -H "Content-Type: application/json" \
+  -d '{"channel_id":"C04SM9CP4F2", "text":"9200"}' && echo -e "\n"
+
+  echo -e "\n📦 Testing POST for snapshot/ (valid serial without webrtc or offline)"
+curl -s -X POST "$BASE_URL/snapshot" \
+  -H "Content-Type: application/json" \
+  -d '{"channel_id":"C04SM9CP4F2", "text":"92004945"}' && echo -e "\n"
