@@ -58,7 +58,7 @@ app.post("/snapshot", async (req, res) => {
     console.log("Received snapshot request:", req.body);
     const { channel_id, text, thread_ts } = req.body;
     
-    // Validate channel access
+    /** Validate channel access
     const channelValidation = ValidationService.validateChannelAccess(channel_id, CONFIG.ALLOWED_CHANNELS);
     if (!channelValidation.success) {
       console.log(`Blocked snapshot request from channel: ${channel_id}`);
@@ -67,7 +67,7 @@ app.post("/snapshot", async (req, res) => {
         text: channelValidation.error,
       });
     }
-
+    **/
     // Process snapshot request
     const result = await deviceService.processWebrtcStatusRequest(text);
     if (!result.success) {
