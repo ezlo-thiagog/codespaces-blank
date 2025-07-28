@@ -23,9 +23,9 @@ class ValidationService {
     .replace(/_(.*?)_/g, '$1') // Remove italic markdown _text_
     .replace(/`(.*?)`/g, '$1') // Remove code markdown `text`
     .trim();
-    
+
     // Extract serials (split by whitespace)
-    const serials = text.trim().split(/\s+/);
+    const serials = cleanedText.trim().split(/\s+/);
     
     // Check for multiple serials
     if (serials.length > 1) {
