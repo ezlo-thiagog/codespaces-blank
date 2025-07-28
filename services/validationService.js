@@ -16,6 +16,14 @@ class ValidationService {
       };
     }
 
+    let cleanedText = text.trim()
+    .replace(/[\*_`~]/g, '') // Remove asterisks, underscores, backticks, tildes
+    .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold markdown **text**
+    .replace(/\*(.*?)\*/g, '$1') // Remove italic markdown *text*
+    .replace(/_(.*?)_/g, '$1') // Remove italic markdown _text_
+    .replace(/`(.*?)`/g, '$1') // Remove code markdown `text`
+    .trim();
+    
     // Extract serials (split by whitespace)
     const serials = text.trim().split(/\s+/);
     

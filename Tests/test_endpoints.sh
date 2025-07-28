@@ -10,6 +10,16 @@ curl -s -X POST "$BASE_URL" \
   -H "Content-Type: application/json" \
   -d '{"channel_id":"C04SM9CP4F2", "text":"92000000"}' && echo -e "\n"
 
+  echo -e "\n📦 Testing POST / (valid serial with format)"
+curl -s -X POST "$BASE_URL" \
+  -H "Content-Type: application/json" \
+  -d '{"channel_id":"C04SM9CP4F2", "text":"_92000000_"}' && echo -e "\n"
+
+echo -e "\n📦 Testing POST / (valid serial with format)"
+curl -s -X POST "$BASE_URL" \
+  -H "Content-Type: application/json" \
+  -d '{"channel_id":"C04SM9CP4F2", "text":"*92000000*"}' && echo -e "\n"
+
 echo -e "\n🚫 Testing POST / (empty serial)"
 curl -s -X POST "$BASE_URL" \
   -H "Content-Type: application/json" \
