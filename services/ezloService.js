@@ -104,7 +104,7 @@ class EzloService {
             console.error("Available serials:", Object.keys(controllerMapping));
             return {
               success: false,
-              error: `Device with serial ${serial} not found or not accessible. Available devices: ${Object.keys(controllerMapping).join(', ')}`
+              error: `Device with serial ${serial} not found or not accessible. Please check the serial number and try again.`
             };
           }
         } else {
