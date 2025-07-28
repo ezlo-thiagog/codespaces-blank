@@ -112,7 +112,7 @@ app.post("/snapshot", async (req, res) => {
       }
     } else {
       return res.json({
-        response_type: "in_channel",
+        response_type: "ephemeral",
         text: message,
       });
     }
