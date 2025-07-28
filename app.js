@@ -3,6 +3,11 @@ const CONFIG = require("./config");
 const DeviceService = require("./services/deviceService");
 const ValidationService = require("./services/validationService");
 
+const { WebClient } = require('@slack/web-api');
+
+// Initialize Slack WebClient
+const slack = new WebClient(process.env.SLACK_BOT_TOKEN);
+
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -87,18 +92,28 @@ app.post("/snapshot", async (req, res) => {
 
     // Check if this is from a thread
     if (thread_ts) {
-      console.log(`Responding to thread with timestamp: ${thread_ts}`);
-      return res.json({
-        response_type: "in_channel", // or "ephemeral" if you want it private
-        text: result.message,
-        thread_ts: thread_ts // This will make the response appear in the thread
-      });
+      try {
+        await slack.chat.postMessage({
+          channel: channel_id,
+          text: message,
+          thread_ts: thread_ts
+        });
+
+        return res.json({
+          response_type: "ephemeral",
+          text: message
+        });
+      } catch (apiError) {
+        console.error("Error posting to thread:", apiError);
+        return res.json({
+          response_type: "ephemeral",
+          text: "❌ Failed to process request in thread. Please try again."
+        });
+      }
     } else {
-      // Regular response (not in a thread)
-      console.log("Responding to channel (not in thread)");
       return res.json({
-        response_type: "ephemeral",
-        text: result.message,
+        response_type: "in_channel",
+        text: message,
       });
     }
 

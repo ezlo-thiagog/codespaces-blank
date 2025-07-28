@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@slack/web-api": "^7.9.3",
     "@types/node": "^22.13.11",
     "axios": "^1.11.0",
     "dotenv": "^17.2.1",
