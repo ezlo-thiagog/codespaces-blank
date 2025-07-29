@@ -16,6 +16,38 @@ const PORT = process.env.PORT || 3000;
 // Initialize services
 const deviceService = new DeviceService(CONFIG);
 
+// OAuth endpoint for Slack app installation
+app.get('/slack/oauth/callback', async (req, res) => {
+  const { code, error } = req.query;
+  
+  if (error) {
+    return res.status(400).send(`Installation failed: ${error}`);
+  }
+  
+  try {
+    // Exchange code for access token
+    const response = await fetch('https://slack.com/api/oauth.v2.access', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        client_id: process.env.SLACK_CLIENT_ID,
+        client_secret: process.env.SLACK_CLIENT_SECRET,
+        code: code
+      })
+    });
+    
+    const result = await response.json();
+    
+    if (result.ok) {
+      res.send('✅ App installed successfully! You can now use /history and /snapshot commands.');
+    } else {
+      throw new Error(result.error);
+    }
+  } catch (error) {
+    res.status(500).send(`Installation failed: ${error.message}`);
+  }
+});
+
 app.post("/", (req, res) => {
   try {
     console.log("Received request:", req.body);
