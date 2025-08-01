@@ -1,0 +1,23 @@
+name: Jittered Cron Job (Keep App Alive)
+
+on:
+  schedule:
+    # Every 15 minutes on weekdays between 6 AM and 6 PM UTC
+    - cron: '*/15 6-17 * * 1-5'
+  workflow_dispatch: # Optional: allows manual runs
+
+jobs:
+  ping-app-with-jitter:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Random jitter sleep (0–119s)
+        run: |
+          JITTER=$(( RANDOM % 120 ))
+          echo "Sleeping for $JITTER seconds..."
+          sleep $JITTER
+
+      - name: Ping Render App
+        run: |
+          echo "Sending GET request to keep app alive..."
+          curl -s -o /dev/null -w "%{http_code}\n" https://codespaces-blank-k6x0.onrender.com
