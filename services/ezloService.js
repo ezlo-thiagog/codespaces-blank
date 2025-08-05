@@ -167,8 +167,9 @@ class EzloService {
       // Check if snapshot retrieval was successful
       if (response.data && response.data.status === 1 && response.data.complete === 1) {
         const features = response.data.data?.controller_response?.result?.features;
+        console.log("Retrieving features list: ", features)
         let webrtcV2Status = null;
-        let webrtcV2Exists = false;
+        let webrtcV2Exists = false;x
 
         if (features && typeof features === 'object') {
           if ('mqttwebrtc.v2' in features) {

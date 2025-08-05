@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BASE_URL="https://animated-spoon-x5pr565x9q7vfpvp6-3000.app.github.dev"
+BASE_URL="https://friendly-cod-5grvg6g547493q5v-3000.app.github.dev/"
 
 echo "🔎 Testing GET /"
 curl -s "$BASE_URL" && echo -e "\n"
