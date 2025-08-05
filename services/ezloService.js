@@ -169,7 +169,7 @@ class EzloService {
         const features = response.data.data?.controller_response?.result?.features;
         console.log("Retrieving features list: ", features)
         let webrtcV2Status = null;
-        let webrtcV2Exists = false;x
+        let webrtcV2Exists = false;
 
         if (features && typeof features === 'object') {
           if ('mqttwebrtc.v2' in features) {
