@@ -3,7 +3,7 @@ name: Jittered Cron Job (Keep App Alive)
 on:
   schedule:
     # Every 15 minutes on weekdays between 6 AM and 6 PM UTC
-    - cron: '*/15 11-23 * * 1-5'
+    - cron: '*/13 11-23 * * 1-5'
 
   workflow_dispatch: # Optional: allows manual runs
 
