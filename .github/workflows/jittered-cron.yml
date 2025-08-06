@@ -2,29 +2,55 @@ name: Jittered Cron Job (Keep App Alive)
 
 on:
   schedule:
-    # Every 15 minutes on weekdays between 6 AM and 6 PM UTC
+    # Every 10 minutes on weekdays between 6 AM and 6:59 PM Colombia time (UTC-5)
     - cron: '*/10 11-23 * * 1-5'
-
-  workflow_dispatch: # Optional: allows manual runs
+  workflow_dispatch:
 
 jobs:
   ping-app-with-jitter:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Random jitter sleep (0–119s)
+      - name: Add random jitter (0–89 seconds) with logging
         run: |
-          JITTER=$(( RANDOM % 120 ))
-          echo "Sleeping for $JITTER seconds..."
+          # Configuration
+          MAX_JITTER=90
+
+          # Generate random jitter
+          RANDOM_SEED=$RANDOM
+          JITTER=$(( RANDOM_SEED % MAX_JITTER ))
+
+          # Log values
+          echo "🔁 Random seed: $RANDOM_SEED"
+          echo "⏱️ Max jitter: $MAX_JITTER seconds"
+          echo "🕒 Sleeping for $JITTER seconds to introduce jitter..."
+          echo "🕒 Sleep start: $(TZ=America/Bogota date)"
+
+          # Sleep
           sleep $JITTER
+
+          # Log completion
+          echo "✅ Sleep end:   $(TZ=America/Bogota date)"
 
       - name: Show current time of execution in GMT-5
         run: |
           echo "Current time in Colombia (GMT-5):"
           TZ=America/Bogota date
 
-      - name: Ping Render App
+      - name: Ping Render App with retries
         run: |
-          echo "Sending GET request to keep app alive..."
-          curl -s -o /dev/null -w "%{http_code}\n" https://codespaces-blank-k6x0.onrender.com
+          echo "📡 Sending GET request to keep app alive (with retry)..."
+          for i in {1..5}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://codespaces-blank-k6x0.onrender.com)
+            echo "Attempt $i: HTTP $STATUS"
+            if [ "$STATUS" = "200" ]; then
+              echo "✅ App is up!"
+              exit 0
+            fi
+            echo "⏳ Waiting before retry..."
+            sleep 10
+          done
+          echo "❌ App did not respond with HTTP 200 after 5 attempts."
+          exit 1
+
 
