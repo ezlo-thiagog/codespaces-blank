@@ -3,7 +3,7 @@ name: Jittered Cron Job (Keep App Alive)
 on:
   schedule:
     # Every 15 minutes on weekdays between 6 AM and 6 PM UTC
-    - cron: '*/13 11-23 * * 1-5'
+    - cron: '*/10 11-23 * * 1-5'
 
   workflow_dispatch: # Optional: allows manual runs
 
@@ -18,7 +18,13 @@ jobs:
           echo "Sleeping for $JITTER seconds..."
           sleep $JITTER
 
+      - name: Show current time of execution in GMT-5
+        run: |
+          echo "Current time in Colombia (GMT-5):"
+          TZ=America/Bogota date
+
       - name: Ping Render App
         run: |
           echo "Sending GET request to keep app alive..."
           curl -s -o /dev/null -w "%{http_code}\n" https://codespaces-blank-k6x0.onrender.com
+
