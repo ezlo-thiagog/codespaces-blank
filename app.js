@@ -52,16 +52,7 @@ app.post("/", (req, res) => {
   try {
     console.log("Received request:", req.body);
     const { channel_id, text } = req.body;
-    
-    // Validate channel access
-    const channelValidation = ValidationService.validateChannelAccess(channel_id, CONFIG.ALLOWED_CHANNELS);
-    if (!channelValidation.success) {
-      console.log(`Blocked request from channel: ${channel_id}`);
-      return res.json({
-        response_type: "ephemeral",
-        text: channelValidation.error,
-      });
-    }
+  
 
     // Process device lookup
     const result = deviceService.processDeviceLookup(text);
