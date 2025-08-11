@@ -3,7 +3,7 @@ name: Jittered Cron Job (Keep App Alive)
 on:
   schedule:
     # Every 10 minutes on weekdays between 6 AM and 6:59 PM Colombia time (UTC-5)
-    - cron: '*/10 11-23 * * 1-5'
+    - cron: '*/15 11-23 * * 1-5'
   workflow_dispatch:
 
 jobs:
@@ -21,16 +21,16 @@ jobs:
           JITTER=$(( RANDOM_SEED % MAX_JITTER ))
 
           # Log values
-          echo "🔁 Random seed: $RANDOM_SEED"
-          echo "⏱️ Max jitter: $MAX_JITTER seconds"
-          echo "🕒 Sleeping for $JITTER seconds to introduce jitter..."
-          echo "🕒 Sleep start: $(TZ=America/Bogota date)"
+          echo "Random seed: $RANDOM_SEED"
+          echo "Max jitter: $MAX_JITTER seconds"
+          echo "Sleeping for $JITTER seconds to introduce jitter..."
+          echo "Sleep start: $(TZ=America/Bogota date)"
 
           # Sleep
           sleep $JITTER
 
           # Log completion
-          echo "✅ Sleep end:   $(TZ=America/Bogota date)"
+          echo "Sleep end:   $(TZ=America/Bogota date)"
 
       - name: Show current time of execution in GMT-5
         run: |
@@ -39,18 +39,19 @@ jobs:
 
       - name: Ping Render App with retries
         run: |
-          echo "📡 Sending GET request to keep app alive (with retry)..."
+          echo "Sending GET request to keep app alive (with retry)..."
           for i in {1..5}; do
             STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://codespaces-blank-k6x0.onrender.com)
             echo "Attempt $i: HTTP $STATUS"
             if [ "$STATUS" = "200" ]; then
-              echo "✅ App is up!"
+              echo "App is up!"
               exit 0
             fi
-            echo "⏳ Waiting before retry..."
+            echo "HTTP $STATUS"
+            echo "Waiting before retry..."
             sleep 10
           done
-          echo "❌ App did not respond with HTTP 200 after 5 attempts."
+          echo "App did not respond with HTTP 200 after 5 attempts."
           exit 1
 
 
