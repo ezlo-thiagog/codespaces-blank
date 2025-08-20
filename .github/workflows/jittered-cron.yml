@@ -2,8 +2,8 @@ name: Jittered Cron Job (Keep App Alive)
 
 on:
   schedule:
-    # Every 10 minutes on weekdays between 6 AM and 6:59 PM Colombia time (UTC-5)
-    - cron: '*/15 11-23 * * 1-5'
+    # Every 5 minutes on weekdays between 6 AM and 6:59 PM Colombia time (UTC-5)
+    - cron: '*/5 11-23 * * 1-5'
   workflow_dispatch:
 
 jobs:
